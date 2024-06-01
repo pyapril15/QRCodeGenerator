@@ -1,0 +1,118 @@
+/* General styling for the entire application */
+* {
+    background-color: #f8f9fa; /* Light grey background for a modern look */
+    font-family: 'Segoe UI';
+    font: 12pt;
+    outline: none;
+	border: none;
+}
+
+QToolTip {
+	background-color: #f8f8f2;
+	border: 1px solid #CCC;
+	background-image: none;
+	background-position: left center;
+    background-repeat: no-repeat;
+	border-left: 5px solid rgb(255, 121, 198);
+	text-align: center;
+	padding-left: 5px;
+}
+
+QTextEdit {
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #ffffff; /* White background for better readability */
+    color: #495057; /* Darker text color */
+}
+
+/* Styling for buttons */
+QPushButton {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+QPushButton:hover {
+    background-color: #0056b3;
+}
+
+QPushButton:pressed {
+    background-color: #004085;
+}
+
+/* Styling for sliders */
+QSlider {
+    background: #e9ecef;
+    border-radius: 5px;
+}
+
+QSlider::groove:horizontal {
+    height: 8px;
+    background: #dee2e6;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    background: #007BFF;
+    border: 1px solid #007BFF;
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    margin: -5px 0;
+    cursor: pointer;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #0056b3;
+}
+
+/* Styling for input fields */
+QLineEdit {
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 8px;
+    background-color: #ffffff;
+    color: #495057;
+}
+
+/* Styling for labels */
+QLabel {
+    font-size: 16px;
+    color: #343a40;
+}
+
+/* Styling for color picker buttons */
+QPushButton#select_fill_color, QPushButton#select_background_color {
+    background-color: #28a745;
+    color: white;
+}
+
+QPushButton#select_fill_color:hover, QPushButton#select_background_color:hover {
+    background-color: #218838;
+}
+
+/* Styling for the main title */
+QLabel#input_title, QLabel#setting_title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #212529;
+}
+
+QLabel#version_title, QLabel#box_size_title, QLabel#border_size_title, QLabel#fill_color_title, QLabel#background_color_title {
+    font-size: 18px;
+    color: #212529;
+}
+
+/* Styling for descriptions */
+QLabel#version_description, QLabel#box_size_description, QLabel#border_size_description, QLabel#fill_color_description, QLabel#background_color_description {
+    font-size: 14px;
+    font-style: italic;
+    color: #6c757d;
+}
