@@ -9,7 +9,7 @@ def setup_logger():
     Returns:
         logger: Configured logger object.
     """
-    logger = logging.getLogger('QRCodeGenerator')
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
 
     log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'app.log')
