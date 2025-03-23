@@ -21,9 +21,9 @@ QRCodeGenerator/
 │ ├── init.py # Initialize the src package
 │ ├── config.py # Configuration handling module
 │ ├── logger.py # Logging module
-│ ├── main.py # Main application script
 │ ├── ui_qrcode.py # UI module generated from .ui file
 ├── app.log # Log file
+├── main.py # Main application script
 ├── README.md # Project documentation
 ├── requirements.txt # Python dependencies
 
