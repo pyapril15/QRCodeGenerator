@@ -623,3 +623,11 @@ AssertionError
 2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.
 2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.
 2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.
+2025-03-24 13:09:47,907 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 13:09:47,907 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 13:09:47,916 - src.logger - INFO - Application UI initialized.
+2025-03-24 13:09:47,916 - src.logger - INFO - Application UI initialized.
+2025-03-24 13:09:47,916 - src.logger - INFO - Application UI initialized.
+2025-03-24 13:09:54,769 - src.logger - INFO - QR code generated successfully.
+2025-03-24 13:09:54,769 - src.logger - INFO - QR code generated successfully.
+2025-03-24 13:09:54,769 - src.logger - INFO - QR code generated successfully.
