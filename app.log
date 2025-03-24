@@ -461,3 +461,119 @@ AssertionError
 2025-03-23 13:23:12,764 - src.logger - INFO - Application UI initialized.
 2025-03-23 13:23:12,798 - src.logger - ERROR - Error checking for updates: Invalid URL 'your-version-file-url/version.txt': No scheme supplied. Perhaps you meant https://your-version-file-url/version.txt?
 2025-03-23 13:23:12,798 - src.logger - ERROR - Error checking for updates: Invalid URL 'your-version-file-url/version.txt': No scheme supplied. Perhaps you meant https://your-version-file-url/version.txt?
+2025-03-24 09:08:40,666 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:08:40,666 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:08:41,242 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:08:41,242 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:37,326 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:37,326 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:37,883 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:37,883 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:42,656 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:42,656 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:43,083 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:43,083 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:53,144 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:53,144 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:20:53,353 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:20:53,353 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:21:08,449 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:21:08,449 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:21:08,673 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:21:08,673 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:30:40,495 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:30:40,495 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:30:41,086 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:30:41,086 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:41:25,206 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:41:25,206 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:41:25,666 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:41:25,666 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:47:36,670 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:47:36,670 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:47:37,494 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:47:37,494 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:48:49,145 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:48:49,145 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:48:49,724 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:48:49,724 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:50:40,996 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:50:40,996 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:50:41,920 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:50:41,920 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:50:49,798 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:50:49,798 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:51:58,302 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:51:58,302 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:51:58,840 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:51:58,840 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:52:04,448 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:52:04,448 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:52:57,712 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:52:57,712 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:52:57,751 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:52:57,751 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:52:58,153 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:52:58,153 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:52:58,162 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:52:58,162 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:04,834 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:04,834 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:12,181 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:12,181 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:20,045 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:20,045 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:20,605 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:20,605 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:24,158 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:24,158 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:27,315 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:27,315 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:28,175 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:28,175 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:31,214 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:31,214 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:42,577 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:42,577 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:53:43,164 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:43,164 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:53:47,247 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:53:47,247 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:55:05,972 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:55:05,972 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:55:06,413 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:55:06,413 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:55:17,077 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:55:17,077 - src.logger - ERROR - Error generating QR code: invalid literal for int() with base 10: '1.0.0'
+2025-03-24 09:57:03,142 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:57:03,142 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:57:03,643 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:57:03,643 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:57:06,153 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:57:06,153 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:57:23,944 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:57:23,944 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:57:24,443 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:57:24,443 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:57:28,508 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:57:28,508 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:01,484 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:58:01,484 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:58:02,045 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:58:02,045 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:58:04,950 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:04,950 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:31,944 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:58:31,944 - src.logger - INFO - Application UI initialized.
+2025-03-24 09:58:32,605 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:58:32,605 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 09:58:34,663 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:34,663 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:39,955 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:39,955 - src.logger - INFO - QR code generated successfully.
+2025-03-24 09:58:39,955 - src.logger - INFO - Selected fill color: #00ffff
+2025-03-24 09:58:39,955 - src.logger - INFO - Selected fill color: #00ffff
+2025-03-24 12:03:49,345 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:03:49,345 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:03:50,749 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:03:50,749 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest

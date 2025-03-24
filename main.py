@@ -68,6 +68,13 @@ class MainWindow(QMainWindow):
 
         self.init_ui()
         self.check_for_updates()
+        self.set_window_icon()
+
+    def set_window_icon(self):
+        """
+        Set the window icon.
+        """
+        self.setWindowIcon(QIcon(self.config.icon_path))
 
     def init_ui(self):
         """
