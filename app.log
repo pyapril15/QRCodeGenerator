@@ -577,3 +577,49 @@ AssertionError
 2025-03-24 12:03:49,345 - src.logger - INFO - Application UI initialized.
 2025-03-24 12:03:50,749 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
 2025-03-24 12:03:50,749 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:18:55,199 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:18:55,199 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:18:56,342 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:18:56,342 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:19:18,886 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:19:18,886 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:19:19,418 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:19:19,418 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:26,883 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:27:26,883 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:27:26,891 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:26,891 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:26,891 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:27,763 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:27,763 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:27,763 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:50,052 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:27:50,052 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:27:50,060 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:50,060 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:50,060 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:27:51,212 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:51,212 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:27:51,212 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:38:48,184 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:38:48,184 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:38:48,192 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:38:48,192 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:38:48,192 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:38:50,363 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:38:50,363 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:38:50,363 - src.logger - ERROR - Error checking for updates: 404 Client Error: Not Found for url: https://api.github.com/repos/pyapril15/qrcode_generator/releases/latest
+2025-03-24 12:39:02,000 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:02,000 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:02,000 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:15,128 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:15,128 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:15,128 - src.logger - INFO - QR code generated successfully.
+2025-03-24 12:39:15,128 - src.logger - INFO - Selected fill color: #55ff00
+2025-03-24 12:39:15,128 - src.logger - INFO - Selected fill color: #55ff00
+2025-03-24 12:39:15,128 - src.logger - INFO - Selected fill color: #55ff00
+2025-03-24 12:42:37,835 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:42:37,835 - src.logger - INFO - QSS loaded successfully from D:\Coding\Coding\Programming\Python\prj\tkinter_gui\QRCodeGenerator\resources/style.qss
+2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.
+2025-03-24 12:42:37,842 - src.logger - INFO - Application UI initialized.

@@ -14,26 +14,44 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from src import logger
-from src.config import Config
-from src.ui_qrcode import Ui_MainWindow
+from src import logger  # Custom logging module
+from src.config import config  # Configuration handling
+from src.ui_qrcode import Ui_MainWindow  # UI class generated from .ui file
 
 
 class QRCodeGenerator:
     """
-    QR Code Generator class that encapsulates QR code generation logic.
+    Encapsulates QR code generation logic.
+
+    This class handles the creation of QR codes with specified parameters.
     """
 
     def __init__(self, version=None, box_size=10, border=4, fill_color="#000000", back_color="#ffffff"):
+        """
+        Initializes the QR code generator.
+
+        Args:
+            version (int, optional): QR code version (1-40). Defaults to None.
+            box_size (int): Size of each box in the QR code.
+            border (int): Border size around the QR code.
+            fill_color (str): Fill color of the QR code (e.g., "#000000").
+            back_color (str): Background color of the QR code (e.g., "#ffffff").
+        """
         self._version = version
         self._box_size = box_size
         self._border = border
         self._fill_color = fill_color
         self._back_color = back_color
 
-    def generate(self, data):
+    def generate(self, data: str) -> ImageQt.Image:
         """
-        Generate a QR code with the given data.
+        Generates a QR code image.
+
+        Args:
+            data (str): The data to encode in the QR code.
+
+        Returns:
+            ImageQt.Image: A PIL Image object representing the generated QR code.
         """
         qr = qrcode.QRCode(
             version=self._version,
@@ -48,37 +66,38 @@ class QRCodeGenerator:
 
 class MainWindow(QMainWindow):
     """
-    Main application window class.
+    Main application window.
+
+    This class defines the main window of the QR code generator application,
+    handling user interface interactions and QR code generation.
     """
 
     def __init__(self):
+        """
+        Initializes the main window.
+        """
         super().__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_MainWindow()  # set up the UI from the generated .ui file
         self.ui.setupUi(self)
 
-        self.config = Config()
-        self.logger = logger.setup_logger()
-        self.qr_generator = QRCodeGenerator(
-            self.config.default_version,
-            self.config.default_box_size,
-            self.config.default_border_size,
-            self.config.default_fill_color,
-            self.config.default_back_color,
+        self.logger = logger.setup_logger()  # Initialize the logger
+        self.qr_generator = QRCodeGenerator(  # Initialize the QR code generator with default settings
+            config.default_version,
+            config.default_box_size,
+            config.default_border_size,
+            config.default_fill_color,
+            config.default_back_color,
         )
 
-        self.init_ui()
-        self.check_for_updates()
-        self.set_window_icon()
-
-    def set_window_icon(self):
-        """
-        Set the window icon.
-        """
-        self.setWindowIcon(QIcon(self.config.icon_path))
+        self.init_ui()  # Initialize UI event handlers
+        self.check_for_updates()  # Check for updates on application start
 
     def init_ui(self):
         """
-        Initialize UI components and event handlers.
+        Initializes UI components and connects event handlers.
+
+        This method sets up the user interface by connecting the signals
+        from UI elements to the corresponding methods.
         """
         self.ui.generate_qrcode.clicked.connect(self.create_qr_code)
         self.ui.save_qrcode.clicked.connect(self.save_qr_code)
@@ -88,9 +107,13 @@ class MainWindow(QMainWindow):
 
     def create_qr_code(self):
         """
-        Generate and display the QR code.
+        Generates and displays the QR code.
+
+        This method retrieves the data from the text edit, generates the QR code
+        using the QRCodeGenerator, and displays it in the UI.
         """
         data = self.ui.textEdit.toPlainText()
+
         if not data:
             self.ui.result_qrcode.clear()
             QMessageBox.warning(self, "Warning", "Please enter data for QR code generation.")
@@ -99,7 +122,7 @@ class MainWindow(QMainWindow):
 
         try:
             qr_img = self.qr_generator.generate(data)
-            qr_img = qr_img.convert("RGB")
+            qr_img = qr_img.convert("RGB")  # Ensure image is in RGB format
             qr_pixmap = QPixmap.fromImage(ImageQt.ImageQt(qr_img))
             self.ui.result_qrcode.setPixmap(qr_pixmap.scaled(200, 200, Qt.KeepAspectRatio))
             self.logger.info("QR code generated successfully.")
@@ -109,7 +132,10 @@ class MainWindow(QMainWindow):
 
     def save_qr_code(self):
         """
-        Save the generated QR code as an image file.
+        Saves the generated QR code as a PNG image file.
+
+        This method opens a file dialog to allow the user to select a save location
+        and then saves the QR code image.
         """
         file_path, _ = QFileDialog.getSaveFileName(self, "Save QR Code", "", "Images (*.png)")
         if file_path:
@@ -121,35 +147,48 @@ class MainWindow(QMainWindow):
                 self.logger.error(f"Failed to save QR code: {str(e)}")
 
     def select_fill_color(self):
+        """
+        Opens a color dialog for selecting the QR code fill color.
+
+        This method allows the user to choose a color for the QR code's foreground.
+        """
         color = QColorDialog.getColor()
         if color.isValid():
             self.qr_generator._fill_color = color.name()
             self.ui.fill_color_value.setText(color.name())
-            self.create_qr_code()
+            self.create_qr_code()  # Regenerate QR code with new color
             self.logger.info(f"Selected fill color: {color.name()}")
 
     def select_back_color(self):
+        """
+        Opens a color dialog for selecting the QR code background color.
+
+        This method allows the user to choose a color for the QR code's background.
+        """
         color = QColorDialog.getColor()
         if color.isValid():
             self.qr_generator._back_color = color.name()
             self.ui.background_color_value.setText(color.name())
-            self.create_qr_code()
+            self.create_qr_code()  # Regenerate QR code with new color
             self.logger.info(f"Selected background color: {color.name()}")
 
     def check_for_updates(self):
         """
-        Check for updates from GitHub Releases.
+        Checks for updates from GitHub Releases.
+
+        This method uses the GitHub API to check for new releases and, if a newer
+        version is available, initiates the download and installation process.
         """
         try:
-            current_version = "1.0.0"
+            current_version = config.app_version  # Consider fetching this from a constant or file.
             owner = "pyapril15"
-            repo = "qrcode_generator"
+            repo = "QRCodeGenerator"
 
             url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
             response = requests.get(url)
-            response.raise_for_status()
+            response.raise_for_status()  # Raise an exception for bad status codes
             release_data = response.json()
-            latest_version = release_data["tag_name"].lstrip("v")
+            latest_version = release_data["tag_name"].lstrip("v")  # Remove potential 'v' prefix
 
             if latest_version > current_version:
                 self.download_and_install_update(release_data)
@@ -161,22 +200,26 @@ class MainWindow(QMainWindow):
 
     def download_and_install_update(self, release_data):
         """
-        Download and install the latest release from GitHub.
+        Downloads and installs the latest release from GitHub.
+
+        This method iterates through the release assets to find an executable,
+        downloads it, and then executes the installer.
         """
         try:
             for asset in release_data["assets"]:
                 if asset["name"].endswith(".exe"):
                     installer_url = asset["browser_download_url"]
-                    installer_path = "QRCodeGenerator-update.exe"
+                    installer_path = "QRCodeGenerator-update.exe"  # Consider a more robust path
 
-                    response = requests.get(installer_url)
+                    response = requests.get(installer_url, stream=True)  # Use stream for large files
                     response.raise_for_status()
 
                     with open(installer_path, "wb") as f:
-                        f.write(response.content)
+                        for chunk in response.iter_content(chunk_size=8192):
+                            f.write(chunk)
 
-                    subprocess.Popen([installer_path])
-                    QApplication.quit()
+                    subprocess.Popen([installer_path])  # Execute the installer
+                    QApplication.quit()  # Close the application
                     return
 
             QMessageBox.critical(self, "Error", "Installer not found in release.")
@@ -188,9 +231,28 @@ class MainWindow(QMainWindow):
             self.logger.error(f"Unexpected error during update: {str(e)}")
 
 
+def load_qss(obj: QApplication, file_path: str):
+    """
+    Loads and applies a QSS stylesheet to the given QApplication object.
+
+    Args:
+        obj (QApplication): The QApplication object to apply the stylesheet to.
+        file_path (str): The path to the QSS stylesheet file.
+    """
+    log = logger.setup_logger()  # Get the logger
+    try:
+        with open(file_path, "r") as f:
+            qss = f.read()
+        obj.setStyleSheet(qss)
+        log.info("QSS loaded successfully from %s", file_path)
+    except Exception as e:
+        log.error("Failed to load QSS from %s: %s", file_path, str(e))
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("qrcode_icon.ico"))
+    app.setWindowIcon(QIcon(config.icon_path))  # Set application icon
+    load_qss(app, config.qss_path)  # Load the stylesheet
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
