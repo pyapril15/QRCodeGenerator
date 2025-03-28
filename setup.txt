@@ -1,4 +1,4 @@
-pyinstaller --onefile --windowed --icon=resources/qrcode_icon.ico --name=QRCodeGenerator --add-data "resources/style.qss;resources" --add-data "resources/qrcode_icon.ico;resources" --add-data "resources/config.ini;resources" --hidden-import qrcode --hidden-import qrcode.image.pil  --hidden-import collections.abc --exclude-module tkinter --exclude-module _tkinter --upx-dir="C:\Users\pytwl\Downloads\upx308w" main.py
+PyInstaller --onefile --windowed --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator --add-data "resources/styles/style.qss;resources" --add-data "resources/icons/qrcode_icon.ico;resources" --add-data "resources/config.ini;resources" --hidden-import qrcode --hidden-import qrcode.image.pil  --hidden-import collections.abc --exclude-module tkinter --exclude-module _tkinter --upx-dir="C:\Users\pytwl\Downloads\upx308w" main.py
 
 The best choice depends on what you're looking for:
 
@@ -14,3 +14,6 @@ The best choice depends on what you're looking for:
 If you're new to writing README files, Readme.so is the easiest and most efficient tool. But if you need more customization, StackEdit is the best Markdown editor. 🚀
 
 Let me know if you need a specific README structure suggestion! 😊
+git rm -r --cached .idea/ app.log resources/config.ini src/__pycache__/ src/app_logic/__pycache__/ src/app_ui/__pycache__/ *.exe
+
+echo ".idea/ app.log resources/config.ini src/__pycache__/ src/app_logic/__pycache__/ src/app_ui/__pycache__/ *.exe" >> .gitignore
