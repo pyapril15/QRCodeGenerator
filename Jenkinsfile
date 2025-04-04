@@ -24,14 +24,14 @@ pipeline {
                     }
                 }
                 sh 'python3 -m venv $VENV_DIR'
-                sh '. $VENV_DIR/bin/activate'
+                sh 'source $VENV_DIR/bin/activate'
             }
         }
 
         stage('Install Dependencies') {
 			steps {
 				sh '''
-                . $VENV_DIR/bin/activate
+                source $VENV_DIR/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 '''
@@ -41,7 +41,7 @@ pipeline {
         stage('Build EXE with PyInstaller') {
 			steps {
 				sh '''
-                . $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
+                source $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
                     --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
                     --add-data=resources/styles/style.qss:resources/styles \
                     --add-data=resources/icons/qrcode_icon.ico:resources/icons \
@@ -52,12 +52,22 @@ pipeline {
             }
         }
 
-        stage('Tag Release on GitHub') {
+        stage('Determine Version & Tag Release') {
 			steps {
 				script {
-					def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
-                    sh "git tag v${version}"
-                    sh "git push origin v${version}"
+					def version = sh(script: "source $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+
+                    // Ensure version is valid
+                    if (!version || version == "None") {
+						error("Failed to retrieve version from config")
+                    }
+
+                    sh """
+                    git config user.name "Jenkins"
+                    git config user.email "jenkins@example.com"
+                    git tag -a v${version} -m "Release v${version}"
+                    git push origin v${version}
+                    """
                 }
             }
         }
@@ -65,8 +75,12 @@ pipeline {
         stage('Create GitHub Release & Upload EXE') {
 			steps {
 				script {
-					def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+					def version = sh(script: "source $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
                     def exeFile = "dist/QRCodeGenerator.exe"
+
+                    if (!fileExists(exeFile)) {
+						error("Executable file not found: ${exeFile}")
+                    }
 
                     def releaseResponse = sh(script: """
                     curl -X POST -H "Authorization: token $GITHUB_TOKEN" \\
@@ -86,6 +100,10 @@ pipeline {
                     def uploadUrl = sh(script: """
                     echo '${releaseResponse}' | jq -r .upload_url | sed 's/{?name,label}//'
                     """, returnStdout: true).trim()
+
+                    if (!uploadUrl || uploadUrl == "null") {
+						error("Failed to retrieve upload URL from GitHub response")
+                    }
 
                     sh """
                     curl -X POST -H "Authorization: token $GITHUB_TOKEN" \\
