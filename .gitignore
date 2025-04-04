@@ -5,6 +5,7 @@ src/__pycache__/
 src/app_logic/__pycache__/
 src/app_ui/__pycache__/
 *.exe
+QRCodeGenerator
 
 
 # Byte-compiled / optimized / DLL files

@@ -1,36 +1,55 @@
-# QRCodeGenerator
+# 🚀 QRCodeGenerator
 
-## Overview
+![QRCodeGenerator Banner](prj_img/qr_code_generator.png)
 
-QRCodeGenerator is a desktop application built with PySide6 that allows users to generate and customize QR codes. Users can configure various aspects of the QR code, including its version, box size, border size, fill color, and background color. The generated QR code can be saved as a PNG image.
+> A sleek, customizable QR code generator built with PySide6. Instantly create, preview, and save QR codes with a beautiful UI.
 
-## Features
+---
 
-- **Customizable QR Codes**: Adjust version, box size, border size, fill color, and background color.
-- **Real-time Updates**: QR code preview updates instantly based on user settings.
-- **Save QR Code**: Generated QR codes can be saved as PNG images.
-- **User-friendly Interface**: Clean and modern UI styled with QSS.
+## 📸 Preview
 
-## Project Structure
+<!-- Replace the path or URL below with your actual image path if needed -->
+![App Screenshot](prj_img/qr_code_generator.png)
 
-```
+---
+
+## 📦 Features
+
+- 🎨 **Customizable QR Codes** – Modify version, box size, border, fill color, and background color.
+- ⚡ **Real-time Preview** – QR codes update instantly with your settings.
+- 💾 **Save as PNG** – Export QR codes directly to image files.
+- 🧑‍💻 **User-friendly Interface** – Clean and modern design styled with QSS.
+- 🛠️ **Cross-platform** – Works on Windows, macOS, and Linux.
+
+---
+
+## 🧠 Project Structure
+
+```plaintext
 QRCodeGenerator/
 ├── prj_img/
 │   └── qr_code_generator.png
 ├── resources/
-│   ├── config.ini        # Configuration file
-│   ├── qrcode_icon.ico   # Application icon
-│   └── style.qss         # QSS stylesheet
+│   ├── config.ini
+│   ├── icons/
+│   │   └── qrcode_icon.ico
+│   └── styles/
+│       └── style.qss
 ├── src/
-│   ├── __init__.py       # Initialize src package
-│   ├── config.py         # Configuration handling module
-│   ├── logger.py         # Logging module
-│   └── ui_qrcode.py      # UI module generated from .ui file
-├── app.log               # Log file
-├── main.py               # Main application script
-├── README.md             # Project documentation
-├── requirements.txt      # Python dependencies
-└── LICENSE               # License file
+│   ├── app_logic/
+│   │   ├── logger.py
+│   │   ├── config.py
+│   │   ├── qrcode_logic.py
+│   │   └── update_logic.py
+│   └── app_ui/
+│       ├── ui_qrcode.py
+│       └── ui_update_window.py
+├── app.log
+├── main.py
+├── Jenkinsfile
+├── requirements.txt
+├── README.md
+└── LICENSE
 ```
 
 ## Installation
@@ -81,8 +100,8 @@ The `config.ini` file stores default settings:
 - `DEFAULT_BACK_COLOR = white`
 
 ### `[Paths]`
-- `QSS_PATH = resources/style.qss`
-- `ICON_PATH = resources/qrcode_icon.ico`
+- `QSS_PATH = resources/styles/style.qss`
+- `ICON_PATH = resources/icons/qrcode_icon.ico`
 
 ## Logging
 

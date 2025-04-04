@@ -27,7 +27,7 @@ QTextEdit {
     color: #495057; /* Darker text color */
 }
 
-/* Styling for buttons */
+/* Styling for buttons  cursor: pointinghand; */
 QPushButton {
     background-color: #007BFF;
     color: white;
@@ -35,7 +35,6 @@ QPushButton {
     border-radius: 5px;
     padding: 8px 16px;
     font-size: 16px;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 QPushButton:hover {
@@ -65,7 +64,6 @@ QSlider::handle:horizontal {
     height: 18px;
     border-radius: 9px;
     margin: -5px 0;
-    cursor: pointer;
 }
 
 QSlider::handle:horizontal:hover {

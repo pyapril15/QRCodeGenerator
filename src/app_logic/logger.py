@@ -2,43 +2,59 @@ import logging
 import os
 
 
-def setup_logger() -> logging.Logger:
+class Logger:
     """
-    Configures a logger with both console and file handlers.
-
-    The console handler logs warnings and above, while the file handler logs all messages.
-    Ensures the log directory exists before writing to the log file.
-
-    Returns:
-        logging.Logger: A configured logger instance.
+    Logger setup class to configure logging for the application.
+    Supports both console and file logging with different log levels.
     """
-    log = logging.getLogger(__name__)
-    log.setLevel(logging.DEBUG)
 
-    # Determine log file path
-    log_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, "app.log")
+    LOG_FILE_NAME = "app.log"
 
-    # Create console and file handlers
-    c_handler = logging.StreamHandler()
-    f_handler = logging.FileHandler(log_path)
+    def __init__(self):
+        """Initializes the logger with console and file handlers."""
+        self._logger = logging.getLogger("QRCodeGenerator")
+        self._logger.setLevel(logging.DEBUG)
 
-    c_handler.setLevel(logging.WARNING)  # Console logs warnings and errors
-    f_handler.setLevel(logging.DEBUG)  # File logs all levels
+        # Prevent duplicate handlers in case of multiple logger instances
+        if not self._logger.hasHandlers():
+            self._setup_handlers()
 
-    # Define log formats
-    c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-    f_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    def _setup_handlers(self):
+        """Sets up logging handlers for console and file logging."""
+        log_dir = self._get_log_directory()
+        log_file_path = os.path.join(log_dir, self.LOG_FILE_NAME)
 
-    c_handler.setFormatter(c_format)
-    f_handler.setFormatter(f_format)
+        try:
+            os.makedirs(log_dir, exist_ok=True)
+        except OSError as e:
+            print(f"Error creating log directory: {e}")
 
-    # Attach handlers to logger
-    log.addHandler(c_handler)
-    log.addHandler(f_handler)
+        # Console handler (Warning and above)
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.WARNING)
+        console_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
+        console_handler.setFormatter(console_format)
 
-    return log
+        # File handler (Logs everything)
+        file_handler = logging.FileHandler(log_file_path, encoding="utf-8")
+        file_handler.setLevel(logging.DEBUG)
+        file_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        file_handler.setFormatter(file_format)
+
+        # Attach handlers to logger
+        self._logger.addHandler(console_handler)
+        self._logger.addHandler(file_handler)
+
+    @staticmethod
+    def _get_log_directory():
+        """Determines and returns the correct log directory path."""
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        return base_dir
+
+    def get_logger(self):
+        """Returns the configured logger instance."""
+        return self._logger
 
 
-logger = setup_logger()  # Initialize logger instance
+# Create and expose a single logger instance
+logger = Logger().get_logger()

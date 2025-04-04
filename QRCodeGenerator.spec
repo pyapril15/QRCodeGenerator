@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('resources/styles/style.qss', 'resources'), ('resources/icons/qrcode_icon.ico', 'resources'), ('resources/config.ini', 'resources')],
+    datas=[('resources/styles/style.qss', 'resources/styles'), ('resources/icons/qrcode_icon.ico', 'resources/icons'), ('resources/config.ini', 'resources')],
     hiddenimports=['qrcode', 'qrcode.image.pil', 'collections.abc'],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['resources\\icons\\qrcode_icon.ico'],
+    icon=['resources/icons/qrcode_icon.ico'],
 )

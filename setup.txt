@@ -1,4 +1,5 @@
-PyInstaller --onefile --windowed --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator --add-data "resources/styles/style.qss;resources" --add-data "resources/icons/qrcode_icon.ico;resources" --add-data "resources/config.ini;resources" --hidden-import qrcode --hidden-import qrcode.image.pil  --hidden-import collections.abc --exclude-module tkinter --exclude-module _tkinter --upx-dir="C:\Users\pytwl\Downloads\upx308w" main.py
+python -m pyinstaller --onefile --windowed --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator --add-data "resources/styles/style.qss;resources/styles" --add-data "resources/icons/qrcode_icon.ico;resources/icons" --add-data "resources/config.ini;resources" --hidden-import qrcode --hidden-import qrcode.image.pil  --hidden-import collections.abc --exclude-module tkinter --exclude-module _tkinter main.py
+pyinstaller --onefile --windowed --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator --add-data=resources/styles/style.qss:resources/styles --add-data=resources/icons/qrcode_icon.ico:resources/icons --add-data=resources/config.ini:resources --hidden-import=qrcode --hidden-import=qrcode.image.pil --hidden-import=collections.abc --exclude-module=tkinter --exclude-module=_tkinter main.py
 
 The best choice depends on what you're looking for:
 
