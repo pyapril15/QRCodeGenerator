@@ -1,37 +1,37 @@
 pipeline {
-	agent any
+    agent any
 
     environment {
-		GITHUB_TOKEN = credentials('github_token')
+        GITHUB_TOKEN = credentials('github_token')
         REPO_URL = 'https://github.com/pyapril15/QRCodeGenerator.git'
         BUILD_DIR = 'dist'
         VENV_DIR = 'venv'
     }
 
     stages {
-		stage('Clone Repository') {
-			steps {
-				git branch: 'main', url: env.REPO_URL
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: env.REPO_URL
             }
         }
 
         stage('Setup Python Environment') {
-			steps {
-				script {
-					def pythonInstalled = sh(script: "python3 --version || python --version", returnStatus: true) == 0
+            steps {
+                script {
+                    def pythonInstalled = sh(script: "python3 --version || python --version", returnStatus: true) == 0
                     if (!pythonInstalled) {
-						error("Python is not installed on the system")
+                        error("Python is not installed on the system")
                     }
                 }
                 sh 'python3 -m venv $VENV_DIR'
-                sh 'source $VENV_DIR/bin/activate'
+                sh '. $VENV_DIR/bin/activate'  // ✅ Fix applied here
             }
         }
 
         stage('Install Dependencies') {
-			steps {
-				sh '''
-                source $VENV_DIR/bin/activate
+            steps {
+                sh '''
+                . $VENV_DIR/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 '''
@@ -39,9 +39,9 @@ pipeline {
         }
 
         stage('Build EXE with PyInstaller') {
-			steps {
-				sh '''
-                source $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
+            steps {
+                sh '''
+                . $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
                     --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
                     --add-data=resources/styles/style.qss:resources/styles \
                     --add-data=resources/icons/qrcode_icon.ico:resources/icons \
@@ -53,13 +53,12 @@ pipeline {
         }
 
         stage('Determine Version & Tag Release') {
-			steps {
-				script {
-					def version = sh(script: "source $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+            steps {
+                script {
+                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
 
-                    // Ensure version is valid
                     if (!version || version == "None") {
-						error("Failed to retrieve version from config")
+                        error("Failed to retrieve version from config")
                     }
 
                     sh """
@@ -73,13 +72,13 @@ pipeline {
         }
 
         stage('Create GitHub Release & Upload EXE') {
-			steps {
-				script {
-					def version = sh(script: "source $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+            steps {
+                script {
+                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
                     def exeFile = "dist/QRCodeGenerator.exe"
 
                     if (!fileExists(exeFile)) {
-						error("Executable file not found: ${exeFile}")
+                        error("Executable file not found: ${exeFile}")
                     }
 
                     def releaseResponse = sh(script: """
@@ -102,7 +101,7 @@ pipeline {
                     """, returnStdout: true).trim()
 
                     if (!uploadUrl || uploadUrl == "null") {
-						error("Failed to retrieve upload URL from GitHub response")
+                        error("Failed to retrieve upload URL from GitHub response")
                     }
 
                     sh """
@@ -117,11 +116,11 @@ pipeline {
     }
 
     post {
-		success {
-			echo "✅ Build and Release Completed Successfully!"
+        success {
+            echo "✅ Build and Release Completed Successfully!"
         }
         failure {
-			echo "❌ Build or Release Failed! Check logs."
+            echo "❌ Build or Release Failed! Check logs."
         }
     }
 }
