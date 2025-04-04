@@ -41,7 +41,7 @@ pipeline {
         stage('Build EXE with PyInstaller') {
             steps {
                 sh '''
-                . $VENV_DIR/bin/activate && wine pyinstaller --onefile --windowed \
+                . $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
                     --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
                     --add-data=resources/styles/style.qss:resources/styles \
                     --add-data=resources/icons/qrcode_icon.ico:resources/icons \
