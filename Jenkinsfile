@@ -1,26 +1,26 @@
 pipeline {
-    agent any
+	agent any
 
     environment {
-        GITHUB_TOKEN = credentials('github_token')
+		GITHUB_TOKEN = credentials('github_token')
         REPO_URL = 'https://github.com/pyapril15/QRCodeGenerator.git'
         BUILD_DIR = 'dist'
         VENV_DIR = 'venv'
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: env.REPO_URL
+		stage('Clone Repository') {
+			steps {
+				git branch: 'main', url: env.REPO_URL
             }
         }
 
         stage('Setup Python Environment') {
-            steps {
-                script {
-                    def pythonInstalled = sh(script: "python3 --version || python --version", returnStatus: true) == 0
+			steps {
+				script {
+					def pythonInstalled = sh(script: "python3 --version || python --version", returnStatus: true) == 0
                     if (!pythonInstalled) {
-                        error("Python is not installed on the system")
+						error("Python is not installed on the system")
                     }
                 }
                 sh 'python3 -m venv $VENV_DIR'
@@ -29,14 +29,19 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-            steps {
-                sh '. $VENV_DIR/bin/activate && pip install -r requirements.txt'
+			steps {
+				sh '''
+                . $VENV_DIR/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                pip install pyinstaller
+                '''
             }
         }
 
         stage('Build EXE with PyInstaller') {
-            steps {
-                sh '''
+			steps {
+				sh '''
                 . $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
                     --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
                     --add-data=resources/styles/style.qss:resources/styles \
@@ -49,9 +54,9 @@ pipeline {
         }
 
         stage('Tag Release on GitHub') {
-            steps {
-                script {
-                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+			steps {
+				script {
+					def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
                     sh "git tag v${version}"
                     sh "git push origin v${version}"
                 }
@@ -59,12 +64,12 @@ pipeline {
         }
 
         stage('Create GitHub Release & Upload EXE') {
-            steps {
-                script {
-                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
+			steps {
+				script {
+					def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
                     def exeFile = "dist/QRCodeGenerator.exe"
 
-                    sh """
+                    def releaseResponse = sh(script: """
                     curl -X POST -H "Authorization: token $GITHUB_TOKEN" \\
                         -H "Accept: application/vnd.github.v3+json" \\
                         https://api.github.com/repos/pyapril15/QRCodeGenerator/releases \\
@@ -75,12 +80,12 @@ pipeline {
                             "draft": false,
                             "prerelease": false
                         }'
-                    """
+                    """, returnStdout: true).trim()
+
+                    echo "GitHub Release Response: ${releaseResponse}"
 
                     def uploadUrl = sh(script: """
-                    curl -s -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Accept: application/vnd.github.v3+json" \\
-                        https://api.github.com/repos/pyapril15/QRCodeGenerator/releases/latest | jq -r .upload_url | sed 's/{?name,label}//'
+                    echo '${releaseResponse}' | jq -r .upload_url | sed 's/{?name,label}//'
                     """, returnStdout: true).trim()
 
                     sh """
@@ -95,11 +100,11 @@ pipeline {
     }
 
     post {
-        success {
-            echo "✅ Build and Release Completed Successfully!"
+		success {
+			echo "✅ Build and Release Completed Successfully!"
         }
         failure {
-            echo "❌ Build or Release Failed! Check logs."
+			echo "❌ Build or Release Failed! Check logs."
         }
     }
 }
