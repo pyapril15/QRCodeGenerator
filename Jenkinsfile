@@ -24,7 +24,7 @@ pipeline {
                     }
                 }
                 sh 'python3 -m venv $VENV_DIR'
-                sh '. $VENV_DIR/bin/activate'  // ✅ Fix applied here
+                sh '. $VENV_DIR/bin/activate'
             }
         }
 
@@ -82,9 +82,9 @@ pipeline {
                     }
 
                     def releaseResponse = sh(script: """
-                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Accept: application/vnd.github.v3+json" \\
-                        https://api.github.com/repos/pyapril15/QRCodeGenerator/releases \\
+                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        https://api.github.com/repos/pyapril15/QRCodeGenerator/releases \
                         -d '{
                             "tag_name": "v${version}",
                             "name": "QRCodeGenerator v${version}",
@@ -105,9 +105,9 @@ pipeline {
                     }
 
                     sh """
-                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \\
-                        -H "Content-Type: application/octet-stream" \\
-                        --data-binary @${exeFile} \\
+                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+                        -H "Content-Type: application/octet-stream" \
+                        --data-binary @${exeFile} \
                         "${uploadUrl}?name=QRCodeGenerator.exe"
                     """
                 }
