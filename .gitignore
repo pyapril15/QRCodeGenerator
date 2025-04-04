@@ -1,6 +1,5 @@
 .idea/
 app.log
-resources/config.ini
 src/__pycache__/
 src/app_logic/__pycache__/
 src/app_ui/__pycache__/
