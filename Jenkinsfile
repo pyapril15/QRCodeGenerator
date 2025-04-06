@@ -58,10 +58,8 @@ pipeline {
         stage('Tag & Push') {
             steps {
                 bat '''
-                    git config user.name "pyapril15"
-                    git config user.email "praveen885127@gmail.com"
-                    git tag %VERSION%
-                    git push origin %VERSION%
+                    "C:\\Program Files\\Git\\bin\\git.exe" tag %VERSION%
+                    "C:\\Program Files\\Git\\bin\\git.exe" push origin %VERSION%
                 '''
             }
         }
