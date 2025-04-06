@@ -60,12 +60,11 @@ pipeline {
                 bat '''
                     "C:\\Program Files\\Git\\bin\\git.exe" config user.name "pyapril15"
                     "C:\\Program Files\\Git\\bin\\git.exe" config user.email "praveen885127@gmail.com"
-                    "C:\\Program Files\\Git\\bin\\git.exe" tag v1.0.3
-                    "C:\\Program Files\\Git\\bin\\git.exe" push origin v1.0.3
+                    "C:\\Program Files\\Git\\bin\\git.exe" tag %VERSION%
+                    "C:\\Program Files\\Git\\bin\\git.exe" push origin %VERSION%
                 '''
             }
         }
-
 
         stage('Create GitHub Release') {
             steps {
