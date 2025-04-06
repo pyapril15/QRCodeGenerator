@@ -73,7 +73,7 @@ pipeline {
 
         stage('Create GitHub Release') {
             steps {
-                bat """
+                sh """
                     curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
                     -H "Authorization: token ${GITHUB_TOKEN}" ^
                     -H "Accept: application/vnd.github.v3+json" ^
