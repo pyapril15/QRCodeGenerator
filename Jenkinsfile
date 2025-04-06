@@ -17,7 +17,7 @@ pipeline {
 
         stage('Setup Python') {
             steps {
-                bat '''
+                sh '''
                     C:\\Users\\pytwl\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     venv\\Scripts\\python.exe -m pip install --upgrade pip
@@ -42,14 +42,14 @@ pipeline {
 
         stage('Build EXE') {
             steps {
-                bat '''
+                sh '''
                     call venv\\Scripts\\activate
-                    pyinstaller --onefile --windowed ^
-                    --icon=resources\\icons\\qrcode_icon.ico --name=QRCodeGenerator ^
-                    --add-data=resources\\styles\\style.qss;resources/styles ^
-                    --add-data=resources\\icons\\qrcode_icon.ico;resources/icons ^
-                    --add-data=resources\\config.ini;resources ^
-                    --hidden-import=qrcode --hidden-import=qrcode.image.pil ^
+                    pyinstaller --onefile --windowed \
+                    --icon=resources\\icons\\qrcode_icon.ico --name=QRCodeGenerator \
+                    --add-data=resources\\styles\\style.qss;resources/styles \
+                    --add-data=resources\\icons\\qrcode_icon.ico;resources/icons \
+                    --add-data=resources\\config.ini;resources \
+                    --hidden-import=qrcode --hidden-import=qrcode.image.pil \
                     --hidden-import=collections.abc --exclude-module=tkinter --exclude-module=_tkinter main.py
                 '''
             }
@@ -57,18 +57,18 @@ pipeline {
 
         stage('Tag & Push') {
             steps {
-                bat '''
-                    "C:\\Program Files\\Git\\bin\\git.exe" config user.name "pyapril15"
-                    "C:\\Program Files\\Git\\bin\\git.exe" config user.email "praveen885127@gmail.com"
-                    "C:\\Program Files\\Git\\bin\\git.exe" tag %VERSION%
-                    "C:\\Program Files\\Git\\bin\\git.exe" push origin %VERSION%
+                sh '''
+                    git config user.name "pyapril15"
+                    git config user.email "praveen885127@gmail.com"
+                    git tag %VERSION%
+                    git push origin %VERSION%
                 '''
             }
         }
 
         stage('Create GitHub Release') {
             steps {
-                bat """
+                sh """
                     curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
                     -H "Authorization: token ${GITHUB_TOKEN}" ^
                     -H "Content-Type: application/json" ^
