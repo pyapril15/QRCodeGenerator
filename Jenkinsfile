@@ -61,8 +61,9 @@ pipeline {
                     echo Tagging version: ${env.VERSION}
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
-                    git tag ${env.VERSION}
-                    git push origin ${env.VERSION}
+                    git tag -d %VERSION%
+                    git tag %VERSION%
+                    git push origin %VERSION%
                 """
             }
         }
