@@ -57,14 +57,15 @@ pipeline {
 
         stage('Tag & Push') {
             steps {
-                bat '''
+                bat """
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
-                    git tag %VERSION%
-                    git push origin %VERSION%
-                '''
+                    git tag ${env.VERSION}
+                    git push origin ${env.VERSION}
+                """
             }
         }
+
 
         stage('Create GitHub Release') {
             steps {
