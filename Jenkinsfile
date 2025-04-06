@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                "C:\\Program Files\\Git\\bin\\git.exe" url: "${env.REPO}", branch: 'main'
+                git url: "${env.REPO}", branch: 'main'
             }
         }
 
@@ -58,10 +58,10 @@ pipeline {
         stage('Tag & Push') {
             steps {
                 bat '''
-                    "C:\\Program Files\\Git\\bin\\git.exe" config user.name "pyapril15"
-                    "C:\\Program Files\\Git\\bin\\git.exe" config user.email "praveen885127@gmail.com"
-                    "C:\\Program Files\\Git\\bin\\git.exe" tag %VERSION%
-                    "C:\\Program Files\\Git\\bin\\git.exe" push origin %VERSION%
+                    git config user.name "pyapril15"
+                    git config user.email "praveen885127@gmail.com"
+                    git tag %VERSION%
+                    git push origin %VERSION%
                 '''
             }
         }
