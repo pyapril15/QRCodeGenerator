@@ -18,13 +18,14 @@ pipeline {
         stage('Setup Python') {
             steps {
                 bat '''
-                    python -m venv venv
+                    C:\\Python311\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    C:\\Python311\\python.exe -m pip install --upgrade pip
+                    C:\\Python311\\python.exe -m pip install -r requirements.txt
                 '''
             }
         }
+
 
         stage('Get Version') {
             steps {
