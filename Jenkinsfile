@@ -17,7 +17,7 @@ pipeline {
 
         stage('Setup Python') {
             steps {
-                sh '''
+                bat '''
                     C:\\Users\\pytwl\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     venv\\Scripts\\python.exe -m pip install --upgrade pip
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Build EXE') {
             steps {
-                sh '''
+                bat '''
                     call venv\\Scripts\\activate
                     pyinstaller --onefile --windowed \
                     --icon=resources\\icons\\qrcode_icon.ico --name=QRCodeGenerator \
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Tag & Push') {
             steps {
-                sh '''
+                bat '''
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
                     git tag %VERSION%
@@ -68,7 +68,7 @@ pipeline {
 
         stage('Create GitHub Release') {
             steps {
-                sh """
+                bat """
                     curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
                     -H "Authorization: token ${GITHUB_TOKEN}" ^
                     -H "Content-Type: application/json" ^
