@@ -58,6 +58,7 @@ pipeline {
         stage('Tag & Push') {
             steps {
                 bat """
+                    echo Tagging version: ${env.VERSION}
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
                     git tag ${env.VERSION}
@@ -65,7 +66,6 @@ pipeline {
                 """
             }
         }
-
 
         stage('Create GitHub Release') {
             steps {
