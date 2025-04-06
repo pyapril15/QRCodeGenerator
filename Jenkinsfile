@@ -2,46 +2,47 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_TOKEN = credentials('github_token')
-        REPO_URL = 'https://github.com/pyapril15/QRCodeGenerator.git'
-        BUILD_DIR = 'dist'
-        VENV_DIR = 'venv'
+        GITHUB_TOKEN = credentials('GITHUB_TOKEN')
+        REPO = 'https://github.com/pyapril15/QRCodeGenerator.git'
+        REPO_NAME = 'QRCodeGenerator'
+        DIST_DIR = "dist"
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Clone Repo') {
             steps {
-                git branch: 'main', url: env.REPO_URL
+                git url: "${env.REPO}", branch: 'main'
             }
         }
 
-        stage('Setup Python Environment') {
-            steps {
-                script {
-                    def pythonInstalled = sh(script: "python3 --version || python --version", returnStatus: true) == 0
-                    if (!pythonInstalled) {
-                        error("Python is not installed on the system")
-                    }
-                }
-                sh 'python3 -m venv $VENV_DIR'
-                sh '. $VENV_DIR/bin/activate'
-            }
-        }
-
-        stage('Install Dependencies') {
+        stage('Setup Python') {
             steps {
                 sh '''
-                . $VENV_DIR/bin/activate
-                pip install --upgrade pip
-                pip install -r requirements.txt
+                    python -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
                 '''
             }
         }
 
-        stage('Build EXE with PyInstaller') {
+        stage('Get Version') {
+            steps {
+                script {
+                    def version = sh(script: '''
+                        source venv/bin/activate
+                        python -c "from src.app_logic.config import config; print(config.app_version)"
+                    ''', returnStdout: true).trim()
+                    env.VERSION = "v${version}"
+                }
+            }
+        }
+
+        stage('Build EXE') {
             steps {
                 sh '''
-                . $VENV_DIR/bin/activate && pyinstaller --onefile --windowed \
+                    source venv/bin/activate
+                    pyinstaller --onefile --windowed \
                     --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
                     --add-data=resources/styles/style.qss:resources/styles \
                     --add-data=resources/icons/qrcode_icon.ico:resources/icons \
@@ -52,75 +53,47 @@ pipeline {
             }
         }
 
-        stage('Determine Version & Tag Release') {
+        stage('Tag & Push') {
             steps {
-                script {
-                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
-
-                    if (!version || version == "None") {
-                        error("Failed to retrieve version from config")
-                    }
-
-                    sh """
-                    git config user.name "Jenkins"
-                    git config user.email "jenkins@example.com"
-                    git tag -a v${version} -m "Release v${version}"
-                    git push origin v${version}
-                    """
-                }
+                sh '''
+                    git config user.name "pyapril15"
+                    git config user.email "praveen885127@gmail.com"
+                    git tag ${VERSION}
+                    git push origin ${VERSION}
+                '''
             }
         }
 
-        stage('Create GitHub Release & Upload EXE') {
+        stage('Create GitHub Release') {
             steps {
-                script {
-                    def version = sh(script: ". $VENV_DIR/bin/activate && python -c \"from src.app_logic.config import config; print(config.app_version)\"", returnStdout: true).trim()
-                    def exeFile = "dist/QRCodeGenerator.exe"
+                sh '''
+                    curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases \
+                    -H "Authorization: token ${GITHUB_TOKEN}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                        "tag_name": "'${VERSION}'",
+                        "name": "'${VERSION}'",
+                        "body": "Automated release by Jenkins.",
+                        "draft": false,
+                        "prerelease": false
+                    }' > response.json
 
-                    if (!fileExists(exeFile)) {
-                        error("Executable file not found: ${exeFile}")
-                    }
-
-                    def releaseResponse = sh(script: """
-                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
-                        -H "Accept: application/vnd.github.v3+json" \
-                        https://api.github.com/repos/pyapril15/QRCodeGenerator/releases \
-                        -d '{
-                            "tag_name": "v${version}",
-                            "name": "QRCodeGenerator v${version}",
-                            "body": "Automated release for version ${version}",
-                            "draft": false,
-                            "prerelease": false
-                        }'
-                    """, returnStdout: true).trim()
-
-                    echo "GitHub Release Response: ${releaseResponse}"
-
-                    def uploadUrl = sh(script: """
-                    echo '${releaseResponse}' | jq -r .upload_url | sed 's/{?name,label}//'
-                    """, returnStdout: true).trim()
-
-                    if (!uploadUrl || uploadUrl == "null") {
-                        error("Failed to retrieve upload URL from GitHub response")
-                    }
-
-                    sh """
-                    curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
-                        -H "Content-Type: application/octet-stream" \
-                        --data-binary @${exeFile} \
-                        "${uploadUrl}?name=QRCodeGenerator.exe"
-                    """
-                }
+                    UPLOAD_URL=$(cat response.json | python3 -c "import sys, json; print(json.load(sys.stdin)['upload_url'].split('{')[0])")
+                    curl -s -X POST "$UPLOAD_URL?name=QRCodeGenerator.exe" \
+                    -H "Authorization: token ${GITHUB_TOKEN}" \
+                    -H "Content-Type: application/octet-stream" \
+                    --data-binary @"${DIST_DIR}/QRCodeGenerator/QRCODEGENERATOR.exe"
+                '''
             }
         }
     }
 
     post {
-        success {
-            echo "✅ Build and Release Completed Successfully!"
-        }
         failure {
-            echo "❌ Build or Release Failed! Check logs."
+            echo "❌ Build failed!"
+        }
+        success {
+            echo "✅ Build and release completed successfully."
         }
     }
 }
