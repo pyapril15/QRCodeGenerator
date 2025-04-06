@@ -17,9 +17,9 @@ pipeline {
 
         stage('Setup Python') {
             steps {
-                sh '''
+                bat '''
                     python -m venv venv
-                    source venv/bin/activate
+                    call venv\\Scripts\\activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
@@ -29,10 +29,10 @@ pipeline {
         stage('Get Version') {
             steps {
                 script {
-                    def version = sh(script: '''
-                        source venv/bin/activate
+                    def version = bat(script: '''
+                        call venv\\Scripts\\activate
                         python -c "from src.app_logic.config import config; print(config.app_version)"
-                    ''', returnStdout: true).trim()
+                    ''', returnStdout: true).trim().split("\r?\n")[-1] // get last line
                     env.VERSION = "v${version}"
                 }
             }
@@ -40,14 +40,14 @@ pipeline {
 
         stage('Build EXE') {
             steps {
-                sh '''
-                    source venv/bin/activate
-                    pyinstaller --onefile --windowed \
-                    --icon=resources/icons/qrcode_icon.ico --name=QRCodeGenerator \
-                    --add-data=resources/styles/style.qss:resources/styles \
-                    --add-data=resources/icons/qrcode_icon.ico:resources/icons \
-                    --add-data=resources/config.ini:resources \
-                    --hidden-import=qrcode --hidden-import=qrcode.image.pil \
+                bat '''
+                    call venv\\Scripts\\activate
+                    pyinstaller --onefile --windowed ^
+                    --icon=resources\\icons\\qrcode_icon.ico --name=QRCodeGenerator ^
+                    --add-data=resources\\styles\\style.qss;resources/styles ^
+                    --add-data=resources\\icons\\qrcode_icon.ico;resources/icons ^
+                    --add-data=resources\\config.ini;resources ^
+                    --hidden-import=qrcode --hidden-import=qrcode.image.pil ^
                     --hidden-import=collections.abc --exclude-module=tkinter --exclude-module=_tkinter main.py
                 '''
             }
@@ -55,35 +55,30 @@ pipeline {
 
         stage('Tag & Push') {
             steps {
-                sh '''
+                bat '''
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
-                    git tag ${VERSION}
-                    git push origin ${VERSION}
+                    git tag %VERSION%
+                    git push origin %VERSION%
                 '''
             }
         }
 
         stage('Create GitHub Release') {
             steps {
-                sh '''
-                    curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases \
-                    -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -H "Content-Type: application/json" \
-                    -d '{
-                        "tag_name": "'${VERSION}'",
-                        "name": "'${VERSION}'",
-                        "body": "Automated release by Jenkins.",
-                        "draft": false,
-                        "prerelease": false
-                    }' > response.json
+                bat """
+                    curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
+                    -H "Authorization: token ${GITHUB_TOKEN}" ^
+                    -H "Content-Type: application/json" ^
+                    -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${VERSION}\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" > response.json
 
-                    UPLOAD_URL=$(cat response.json | python3 -c "import sys, json; print(json.load(sys.stdin)['upload_url'].split('{')[0])")
-                    curl -s -X POST "$UPLOAD_URL?name=QRCodeGenerator.exe" \
-                    -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -H "Content-Type: application/octet-stream" \
-                    --data-binary @"${DIST_DIR}/QRCodeGenerator/QRCODEGENERATOR.exe"
-                '''
+                    for /f "tokens=* usebackq" %%f in (`type response.json ^| python -c "import sys, json; print(json.load(sys.stdin)['upload_url'].split('{')[0])"`) do set UPLOAD_URL=%%f
+
+                    curl -s -X POST "!UPLOAD_URL!?name=QRCodeGenerator.exe" ^
+                    -H "Authorization: token ${GITHUB_TOKEN}" ^
+                    -H "Content-Type: application/octet-stream" ^
+                    --data-binary @"${DIST_DIR}\\QRCodeGenerator.exe"
+                """
             }
         }
     }
