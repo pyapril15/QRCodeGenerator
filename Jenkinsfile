@@ -61,22 +61,27 @@ pipeline {
                     echo Tagging version: ${env.VERSION}
                     git config user.name "pyapril15"
                     git config user.email "praveen885127@gmail.com"
-                    git tag -d %VERSION%
-                    git tag %VERSION%
-                    git push origin %VERSION%
+
+                    git fetch --tags
+                    git tag -d ${env.VERSION} 2>NUL
+                    git tag ${env.VERSION}
+                    git push origin ${env.VERSION}
                 """
             }
         }
+
 
         stage('Create GitHub Release') {
             steps {
                 bat """
                     curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
                     -H "Authorization: token ${GITHUB_TOKEN}" ^
-                    -H "Content-Type: application/json" ^
-                    -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${VERSION}\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" > response.json
+                    -H "Accept: application/vnd.github.v3+json" ^
+                    -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${VERSION}\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
+                    -o response.json
 
-                    for /f "tokens=* usebackq" %%f in (`type response.json ^| python -c "import sys, json; print(json.load(sys.stdin)['upload_url'].split('{')[0])"`) do set UPLOAD_URL=%%f
+                    for /f "usebackq tokens=*" %%i in (`jq -r ".upload_url" response.json`) do set URL=%%i
+                    for /f "tokens=1 delims={ " %%u in ("!URL!") do set UPLOAD_URL=%%u
 
                     curl -s -X POST "!UPLOAD_URL!?name=QRCodeGenerator.exe" ^
                     -H "Authorization: token ${GITHUB_TOKEN}" ^
@@ -85,6 +90,7 @@ pipeline {
                 """
             }
         }
+
     }
 
     post {
