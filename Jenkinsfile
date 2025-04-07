@@ -1,35 +1,35 @@
 pipeline {
-    agent any
+	agent any
 
     environment {
-        PROJECT_NAME     = "QRCodeGenerator"
-        VERSION          = "v1.0.3"
-        REPO             = "pyapril15/${PROJECT_NAME}"
+		PROJECT_NAME = "QRCodeGenerator"
+        VERSION = "v1.0.3"
+        REPO = "pyapril15/${PROJECT_NAME}"
 
-        BUILD_DIR        = "dist"
-        EXE_NAME         = "${PROJECT_NAME}.exe"
-        BUILD_PATH       = "${BUILD_DIR}/${EXE_NAME}"
+        BUILD_DIR = "dist"
+        EXE_NAME = "${PROJECT_NAME}.exe"
+        BUILD_PATH = "${BUILD_DIR}/${EXE_NAME}"
 
-        RELEASE_NAME     = "QRCode Generator ${VERSION}"
+        RELEASE_NAME = "QRCode Generator ${VERSION}"
         RELEASE_FILENAME = "release.json"
         RELEASE_NOTES_MD = "latest_version.md"
 
-        GITHUB_API_URL   = "https://api.github.com/repos/${REPO}/releases"
-        VENV_DIR         = ".venv"
+        GITHUB_API_URL = "https://api.github.com/repos/${REPO}/releases"
+        VENV_DIR = ".venv"
     }
 
     stages {
 
-        stage('🔄 Checkout') {
-            steps {
-                echo "📁 Checking out branch..."
+		stage('🔄 Checkout') {
+			steps {
+				echo "📁 Checking out branch..."
                 checkout scm
             }
         }
 
         stage('🐍 Setup Virtual Env') {
-            steps {
-                echo "🔧 Setting up venv..."
+			steps {
+				echo "🔧 Setting up venv..."
                 bat '''
                     python -m venv %VENV_DIR%
                     call %VENV_DIR%\\Scripts\\activate.bat
@@ -39,8 +39,8 @@ pipeline {
         }
 
         stage('📦 Install Dependencies') {
-            steps {
-                echo "📚 Installing requirements..."
+			steps {
+				echo "📚 Installing requirements..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pip install -r requirements.txt
@@ -49,8 +49,8 @@ pipeline {
         }
 
         stage('🏗️ Build EXE') {
-            steps {
-                echo "🔨 Compiling executable..."
+			steps {
+				echo "🔨 Compiling executable..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pyinstaller --onefile --windowed ^
@@ -66,10 +66,10 @@ pipeline {
         }
 
         stage('🏷️ Git Tag & Push') {
-            steps {
-                echo "🔖 Tagging ${VERSION}..."
+			steps {
+				echo "🔖 Tagging ${VERSION}..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
-                    bat '''
+					bat '''
                         git config user.name "pyapril15"
                         git config user.email "praveen885127@gmail.com"
                         git remote set-url origin https://%github-token%@github.com/%REPO%.git
@@ -83,10 +83,10 @@ pipeline {
         }
 
         stage('📤 GitHub Release') {
-            steps {
-                echo "📝 Creating GitHub release using latest_version.md..."
+			steps {
+				echo "📝 Creating GitHub release using latest_version.md..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
-                    bat '''
+					bat '''
                         setlocal EnableDelayedExpansion
                         set "BODY="
                         for /F "usebackq delims=" %%A in ("%RELEASE_NOTES_MD%") do (
@@ -116,10 +116,10 @@ pipeline {
         }
 
         stage('📥 Upload .exe') {
-            steps {
-                echo "🚀 Uploading .exe to GitHub release..."
+			steps {
+				echo "🚀 Uploading .exe to GitHub release..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
-                    bat '''
+					bat '''
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
                             set "UPLOAD_URL=%%A"
                         )
@@ -143,30 +143,41 @@ pipeline {
         }
 
         stage('🔀 Merge to main & Cleanup') {
-            steps {
-                echo "🔁 Merging build → main and deleting build branch..."
+			steps {
+				echo "🔁 Merging build → main and deleting build branch..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
-                    bat '''
+					bat '''
+                        REM Ensure we have both branches locally
+                        git fetch origin main
+                        git fetch origin build
+
+                        REM Checkout main branch and pull latest
                         git checkout main
                         git pull origin main
 
-                        git merge build --no-ff -m "🔀 Auto-merged build → main"
+                        REM Merge build into main
+                        git merge origin/build --no-ff -m "🔀 Auto-merged build → main"
+
+                        REM Push updated main
                         git push origin main
 
-                        git branch -d build
-                        git push origin --delete build
+                        REM Delete remote build branch only if merge succeeded
+                        git push origin --delete build || echo "⚠️ Could not delete build branch"
+
+                        REM Optional: Delete local build branch if it exists
+                        git branch -D build 2>NUL
                     '''
-                }
-            }
-        }
+			}
+		}
+}
     }
 
     post {
-        success {
-            echo "✅ Build, release, merge to main, and cleanup successful!"
+		success {
+			echo "✅ Build, release, merge to main, and cleanup successful!"
         }
         failure {
-            echo "❌ Build failed. See logs for details."
+			echo "❌ Build failed. See logs for details."
         }
     }
 }
