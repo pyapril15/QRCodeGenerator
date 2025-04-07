@@ -2,45 +2,36 @@ pipeline {
     agent any
 
     environment {
-        // 🔧 Project Metadata
         PROJECT_NAME     = "QRCodeGenerator"
         VERSION          = "v1.0.3"
         REPO             = "pyapril15/${PROJECT_NAME}"
 
-        // 🛠️ Build Output
         BUILD_DIR        = "dist"
         EXE_NAME         = "${PROJECT_NAME}.exe"
         BUILD_PATH       = "${BUILD_DIR}/${EXE_NAME}"
 
-        // 📝 Release Info
         RELEASE_NAME     = "QRCode Generator ${VERSION}"
         RELEASE_FILENAME = "release.json"
         RELEASE_NOTES_MD = "latest_version.md"
 
-        // 🌍 GitHub
         GITHUB_API_URL   = "https://api.github.com/repos/${REPO}/releases"
-
-        // 🐍 Python Virtual Environment Directory
         VENV_DIR         = ".venv"
     }
 
     stages {
 
-        stage('🔄 Checkout Code') {
+        stage('🔄 Checkout') {
             steps {
-                echo "📁 Checking out the latest source code..."
+                echo "📁 Checking out branch..."
                 checkout scm
             }
         }
 
-        stage('🐍 Setup Python Virtual Environment') {
+        stage('🐍 Setup Virtual Env') {
             steps {
-                echo "🔧 Setting up Python virtual environment..."
+                echo "🔧 Setting up venv..."
                 bat '''
-                    REM Create virtual environment
                     python -m venv %VENV_DIR%
-
-                    REM Activate and upgrade pip
                     call %VENV_DIR%\\Scripts\\activate.bat
                     python -m pip install --upgrade pip
                 '''
@@ -49,7 +40,7 @@ pipeline {
 
         stage('📦 Install Dependencies') {
             steps {
-                echo "📚 Installing required Python packages into virtual environment..."
+                echo "📚 Installing requirements..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pip install -r requirements.txt
@@ -57,9 +48,9 @@ pipeline {
             }
         }
 
-        stage('🏗️ Build Executable with PyInstaller') {
+        stage('🏗️ Build EXE') {
             steps {
-                echo "🛠️ Building .exe using PyInstaller inside virtual environment..."
+                echo "🔨 Compiling executable..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pyinstaller --onefile --windowed ^
@@ -74,15 +65,14 @@ pipeline {
             }
         }
 
-        stage('🏷️ Tag & Push Git Release') {
+        stage('🏷️ Git Tag & Push') {
             steps {
-                echo "🔖 Tagging and pushing version: ${VERSION}"
+                echo "🔖 Tagging ${VERSION}..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
                         git config user.name "pyapril15"
                         git config user.email "praveen885127@gmail.com"
                         git remote set-url origin https://%github-token%@github.com/%REPO%.git
-
                         git fetch --tags
                         git tag -d %VERSION% 2>NUL
                         git tag %VERSION%
@@ -92,14 +82,12 @@ pipeline {
             }
         }
 
-        stage('📤 Create GitHub Release') {
+        stage('📤 GitHub Release') {
             steps {
-                echo "📦 Preparing GitHub release JSON from markdown..."
-
+                echo "📝 Creating GitHub release using latest_version.md..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
                         setlocal EnableDelayedExpansion
-
                         set "BODY="
                         for /F "usebackq delims=" %%A in ("%RELEASE_NOTES_MD%") do (
                             set "LINE=%%A"
@@ -127,12 +115,11 @@ pipeline {
             }
         }
 
-        stage('📥 Upload Executable to GitHub Release') {
+        stage('📥 Upload .exe') {
             steps {
-                echo "⬆️ Uploading .exe to GitHub release..."
+                echo "🚀 Uploading .exe to GitHub release..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
-                        REM Extract upload URL from API response
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
                             set "UPLOAD_URL=%%A"
                         )
@@ -141,11 +128,11 @@ pipeline {
                         set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
 
                         if not exist %BUILD_PATH% (
-                            echo ❌ ERROR: Executable not found at %BUILD_PATH%
+                            echo ❌ ERROR: Executable not found!
                             exit /b 1
                         )
 
-                        echo 🚀 Uploading executable to !UPLOAD_URL!
+                        echo Uploading to !UPLOAD_URL!
                         curl -s -X POST "!UPLOAD_URL!?name=%EXE_NAME%" ^
                              -H "Authorization: token %github-token%" ^
                              -H "Content-Type: application/octet-stream" ^
@@ -154,14 +141,32 @@ pipeline {
                 }
             }
         }
+
+        stage('🔀 Merge to main & Cleanup') {
+            steps {
+                echo "🔁 Merging build → main and deleting build branch..."
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
+                    bat '''
+                        git checkout main
+                        git pull origin main
+
+                        git merge build --no-ff -m "🔀 Auto-merged build → main"
+                        git push origin main
+
+                        git branch -d build
+                        git push origin --delete build
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo "✅ SUCCESS: ${VERSION} release published with executable."
+            echo "✅ Build, release, merge to main, and cleanup successful!"
         }
         failure {
-            echo "❌ FAILURE: Build or deployment process failed. Check logs for details."
+            echo "❌ Build failed. See logs for details."
         }
     }
 }
