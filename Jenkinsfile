@@ -62,16 +62,24 @@ pipeline {
             steps {
                 echo "Creating GitHub release..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
+                    writeFile file: 'release.json', text: """{
+          "tag_name": "${VERSION}",
+          "name": "${RELEASE_NAME}",
+          "body": "🚀 New release of ${PROJECT_NAME}!\n\n🔹 Version: ${VERSION}\\n🔹 Platform: Windows (.exe)\\n\\nThis release includes all the latest features, fixes, and enhancements.\\n\\n✨ Enjoy generating beautiful QR codes with ease.",
+          "draft": false,
+          "prerelease": false
+        }"""
                     bat """
                         curl -s -X POST https://api.github.com/repos/${REPO}/releases ^
                              -H "Authorization: token %github-token%" ^
                              -H "Accept: application/vnd.github.v3+json" ^
-                             -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${RELEASE_NAME}\\", \\"body\\": \\"${RELEASE_BODY}\\", \\"draft\\": false, \\"prerelease\\": false }" ^
+                             -d @release.json ^
                              -o response.json
                     """
                 }
             }
         }
+
 
         stage('📥 Upload .exe to Release') {
             steps {
