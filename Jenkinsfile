@@ -60,25 +60,37 @@ pipeline {
 
         stage('📤 Create GitHub Release') {
             steps {
-                echo "Creating GitHub release..."
+                echo "Creating GitHub release using latest_version.md..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
-                    writeFile file: 'release.json', text: """{
-          "tag_name": "${VERSION}",
-          "name": "${RELEASE_NAME}",
-          "body": "🚀 New release of ${PROJECT_NAME}!\n\n🔹 Version: ${VERSION}\\n🔹 Platform: Windows (.exe)\\n\\nThis release includes all the latest features, fixes, and enhancements.\\n\\n✨ Enjoy generating beautiful QR codes with ease.",
-          "draft": false,
-          "prerelease": false
-        }"""
-                    bat """
+                    bat '''
+                        setlocal EnableDelayedExpansion
+
+                        :: Read the entire content of latest_version.md
+                        set "BODY="
+                        for /F "usebackq delims=" %%A in ("latest_version.md") do (
+                            set "LINE=%%A"
+                            set "LINE=!LINE:\"=\\\"!"
+                            set "BODY=!BODY!!LINE!\\n"
+                        )
+
+                        echo {
+                          "tag_name": "${VERSION}",
+                          "name": "${RELEASE_NAME}",
+                          "body": "!BODY!",
+                          "draft": false,
+                          "prerelease": false
+                        } > release.json
+
                         curl -s -X POST https://api.github.com/repos/${REPO}/releases ^
                              -H "Authorization: token %github-token%" ^
                              -H "Accept: application/vnd.github.v3+json" ^
                              -d @release.json ^
                              -o response.json
-                    """
+                    '''
                 }
             }
         }
+
 
 
         stage('📥 Upload .exe to Release') {
