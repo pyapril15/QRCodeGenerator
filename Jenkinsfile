@@ -163,9 +163,6 @@ pipeline {
 
                         REM Delete remote build branch only if merge succeeded
                         git push origin --delete build || echo "⚠️ Could not delete build branch"
-
-                        REM Optional: Delete local build branch if it exists
-                        git branch -D build 2>NUL
                     '''
 			}
 		}
@@ -173,11 +170,15 @@ pipeline {
     }
 
     post {
-		success {
-			echo "✅ Build, release, merge to main, and cleanup successful!"
+        success {
+            echo "✅ Build and release successful! Ready for safe merge to main."
         }
         failure {
-			echo "❌ Build failed. See logs for details."
+            echo "❌ Build failed. Check logs before merging."
+        }
+        cleanup {
+            echo "🧹 Cleaning up virtual environment..."
+            bat 'rmdir /S /Q %VENV_DIR%'
         }
     }
 }
