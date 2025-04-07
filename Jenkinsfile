@@ -66,30 +66,33 @@ pipeline {
                     git tag -d ${env.VERSION} 2>NUL
                     git tag ${env.VERSION}
                     git push origin ${env.VERSION}
+
+                    if %ERRORLEVEL% NEQ 0 (
+                        echo Failed to push tag. Check permissions or token!
+                        exit /b %ERRORLEVEL%
+                    ) else (
+                        echo ✅ Tag pushed successfully: ${env.VERSION}
+                    )
                 """
             }
         }
+
 
 
         stage('Create GitHub Release') {
             steps {
-                sh """
-                    curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
-                    -H "Authorization: token ${GITHUB_TOKEN}" ^
+                bat """
+                    curl -s -X POST https://api.github.com/repos/pyapril15/%REPO_NAME%/releases ^
+                    -H "Authorization: token %GITHUB_TOKEN%" ^
                     -H "Accept: application/vnd.github.v3+json" ^
-                    -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${VERSION}\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
+                    -d "{ \\"tag_name\\": \\"%VERSION%\\", \\"name\\": \\"%VERSION%\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
                     -o response.json
 
-                    for /f "usebackq tokens=*" %%i in (`jq -r ".upload_url" response.json`) do set URL=%%i
-                    for /f "tokens=1 delims={ " %%u in ("!URL!") do set UPLOAD_URL=%%u
-
-                    curl -s -X POST "!UPLOAD_URL!?name=QRCodeGenerator.exe" ^
-                    -H "Authorization: token ${GITHUB_TOKEN}" ^
-                    -H "Content-Type: application/octet-stream" ^
-                    --data-binary @"${DIST_DIR}\\QRCodeGenerator.exe"
+                    type response.json
                 """
             }
         }
+
 
     }
 
