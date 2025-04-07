@@ -2,10 +2,10 @@ pipeline {
 	agent any
 
     environment {
-		GITHUB_TOKEN = credentials('GITHUB_TOKEN')
-        REPO = 'https://github.com/pyapril15/QRCodeGenerator.git'
+		REPO = 'https://github.com/pyapril15/QRCodeGenerator.git'
         REPO_NAME = 'QRCodeGenerator'
-        DIST_DIR = "dist"
+        DIST_DIR = 'dist'
+        EXE_NAME = 'QRCodeGenerator.exe'
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline {
 					def version = bat(script: '''
                         call venv\\Scripts\\activate
                         python -c "from src.app_logic.config import config; print(config.app_version)"
-                    ''', returnStdout: true).trim().split("\r?\n")[-1]
+                    ''', returnStdout: true).trim().split("\\r?\\n")[-1]
                     env.VERSION = "v${version}"
                 }
             }
@@ -55,50 +55,58 @@ pipeline {
 
         stage('Tag & Push') {
 			steps {
-				bat """
-                    echo Tagging version: ${env.VERSION}
-                    git config user.name "pyapril15"
-                    git config user.email "praveen885127@gmail.com"
-
-                    git remote set-url origin https://${GITHUB_TOKEN}@github.com/pyapril15/QRCodeGenerator.git
-                    git fetch --tags
-                    git branch --set-upstream-to=origin/main main
-
-                    git tag -d ${env.VERSION} 2>NUL
-                    git tag ${env.VERSION}
-                    git push origin ${env.VERSION}
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        echo ❌ Failed to push tag. Check permissions or token!
-                        exit /b %ERRORLEVEL%
-                    ) else (
-                        echo ✅ Tag pushed successfully: ${env.VERSION}
-                    )
-                """
+				withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
+					bat """
+                        echo Tagging version: ${env.VERSION}
+                        git config user.name "pyapril15"
+                        git config user.email "praveen885127@gmail.com"
+                        git remote set-url origin https://${TOKEN}@github.com/pyapril15/QRCodeGenerator.git
+                        git fetch --tags
+                        git branch --set-upstream-to=origin/main main
+                        git tag -d ${env.VERSION} 2>NUL
+                        git tag ${env.VERSION}
+                        git push origin ${env.VERSION}
+                    """
+                }
             }
         }
 
-        stage('Create GitHub Release') {
+        stage('Create GitHub Release with EXE Upload') {
 			steps {
-				bat """
-                    curl -s -X POST https://api.github.com/repos/pyapril15/%REPO_NAME%/releases ^
-                    -H "Authorization: token ${GITHUB_TOKEN}" ^
-                    -H "Accept: application/vnd.github.v3+json" ^
-                    -d "{ \\"tag_name\\": \\"${env.VERSION}\\", \\"name\\": \\"${env.VERSION}\\", \\"body\\": \\"Automated release by Jenkins.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
-                    -o response.json
+				withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
+					bat """
+                        echo Creating GitHub release...
 
-                    type response.json
-                """
+                        curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
+                        -H "Authorization: token %TOKEN%" ^
+                        -H "Accept: application/vnd.github.v3+json" ^
+                        -d "{ \\"tag_name\\": \\"${env.VERSION}\\", \\"name\\": \\"QRCode Generator ${env.VERSION}\\", \\"body\\": \\"🚀 New release of QRCodeGenerator!\\\\n\\\\n🔹 Version: ${env.VERSION}\\\\n🔹 Platform: Windows (.exe)\\\\n\\\\nThis release includes all the latest features, fixes, and enhancements.\\\\n\\\\n\\u2728 Enjoy generating beautiful QR codes with ease.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
+                        -o response.json
+
+                        for /f "tokens=2 delims=:," %%A in ('findstr /i "upload_url" response.json') do (
+                            set "UPLOAD_URL=%%~A"
+                        )
+
+                        setlocal enabledelayedexpansion
+                        set "UPLOAD_URL=!UPLOAD_URL:~1,-1!"
+                        set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
+
+                        curl -s -X POST "!UPLOAD_URL!?name=${EXE_NAME}" ^
+                        -H "Authorization: token %TOKEN%" ^
+                        -H "Content-Type: application/octet-stream" ^
+                        --data-binary "@${DIST_DIR}\\${EXE_NAME}"
+                    """
+                }
             }
         }
     }
 
     post {
-		failure {
-			echo "❌ Build failed!"
+		success {
+			echo "✅ Build and GitHub release with .exe uploaded successfully."
         }
-        success {
-			echo "✅ Build and release completed successfully."
+        failure {
+			echo "❌ Build failed. Check logs for details."
         }
     }
 }
