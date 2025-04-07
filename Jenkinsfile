@@ -2,45 +2,66 @@ pipeline {
     agent any
 
     environment {
-        // 🔧 Project Configuration
+        // 🔧 Project Metadata
         PROJECT_NAME     = "QRCodeGenerator"
         VERSION          = "v1.0.3"
         REPO             = "pyapril15/${PROJECT_NAME}"
+
+        // 🛠️ Build Output
         BUILD_DIR        = "dist"
         EXE_NAME         = "${PROJECT_NAME}.exe"
         BUILD_PATH       = "${BUILD_DIR}/${EXE_NAME}"
 
-        // 🏷️ Release Metadata
+        // 📝 Release Info
         RELEASE_NAME     = "QRCode Generator ${VERSION}"
         RELEASE_FILENAME = "release.json"
-
-        // 📝 Markdown Release Notes File
         RELEASE_NOTES_MD = "latest_version.md"
 
-        // 🌐 GitHub API Endpoint
+        // 🌍 GitHub
         GITHUB_API_URL   = "https://api.github.com/repos/${REPO}/releases"
+
+        // 🐍 Python Virtual Environment Directory
+        VENV_DIR         = ".venv"
     }
 
     stages {
 
         stage('🔄 Checkout Code') {
             steps {
-                echo "📁 Cloning repository..."
+                echo "📁 Checking out the latest source code..."
                 checkout scm
             }
         }
 
-        stage('⚙️ Setup Environment') {
+        stage('🐍 Setup Python Virtual Environment') {
             steps {
-                echo "📦 Installing Python dependencies..."
-                bat 'pip install -r requirements.txt'
+                echo "🔧 Setting up Python virtual environment..."
+                bat '''
+                    REM Create virtual environment
+                    python -m venv %VENV_DIR%
+
+                    REM Activate and upgrade pip
+                    call %VENV_DIR%\\Scripts\\activate.bat
+                    python -m pip install --upgrade pip
+                '''
             }
         }
 
-        stage('🏗️ Build Executable') {
+        stage('📦 Install Dependencies') {
             steps {
-                echo "🚧 Building Windows executable using PyInstaller..."
+                echo "📚 Installing required Python packages into virtual environment..."
                 bat '''
+                    call %VENV_DIR%\\Scripts\\activate.bat
+                    pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('🏗️ Build Executable with PyInstaller') {
+            steps {
+                echo "🛠️ Building .exe using PyInstaller inside virtual environment..."
+                bat '''
+                    call %VENV_DIR%\\Scripts\\activate.bat
                     pyinstaller --onefile --windowed ^
                         --icon=resources\\icons\\qrcode_icon.ico --name=%PROJECT_NAME% ^
                         --add-data=resources\\styles\\style.qss;resources/styles ^
@@ -55,7 +76,7 @@ pipeline {
 
         stage('🏷️ Tag & Push Git Release') {
             steps {
-                echo "🔖 Tagging release version: ${VERSION}"
+                echo "🔖 Tagging and pushing version: ${VERSION}"
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
                         git config user.name "pyapril15"
@@ -73,7 +94,7 @@ pipeline {
 
         stage('📤 Create GitHub Release') {
             steps {
-                echo "📝 Generating release.json from latest_version.md..."
+                echo "📦 Preparing GitHub release JSON from markdown..."
 
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
@@ -108,10 +129,10 @@ pipeline {
 
         stage('📥 Upload Executable to GitHub Release') {
             steps {
-                echo "📁 Uploading compiled .exe to GitHub release..."
+                echo "⬆️ Uploading .exe to GitHub release..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
-                        REM Get upload_url from response.json
+                        REM Extract upload URL from API response
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
                             set "UPLOAD_URL=%%A"
                         )
@@ -120,11 +141,11 @@ pipeline {
                         set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
 
                         if not exist %BUILD_PATH% (
-                            echo ❌ ERROR: %BUILD_PATH% not found!
+                            echo ❌ ERROR: Executable not found at %BUILD_PATH%
                             exit /b 1
                         )
 
-                        echo ⬆️ Uploading %EXE_NAME% to !UPLOAD_URL!
+                        echo 🚀 Uploading executable to !UPLOAD_URL!
                         curl -s -X POST "!UPLOAD_URL!?name=%EXE_NAME%" ^
                              -H "Authorization: token %github-token%" ^
                              -H "Content-Type: application/octet-stream" ^
@@ -137,10 +158,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Release v${VERSION} complete: Executable uploaded and published on GitHub."
+            echo "✅ SUCCESS: ${VERSION} release published with executable."
         }
         failure {
-            echo "❌ Build or release failed. Check the console output for detailed logs."
+            echo "❌ FAILURE: Build or deployment process failed. Check logs for details."
         }
     }
 }
