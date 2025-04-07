@@ -9,7 +9,11 @@
 ## 📸 Preview
 
 <!-- Replace the path or URL below with your actual image path if needed -->
-![App Screenshot](prj_img/qr_code_generator.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/pyapril15/QRCodeGenerator/main/prj_img/version/103/update_available.png" width="45%" />
+  <img src="https://raw.githubusercontent.com/pyapril15/QRCodeGenerator/main/prj_img/version/103/update_required.png" width="45%" />
+</p>
+
 
 ---
 
@@ -28,7 +32,9 @@
 ```plaintext
 QRCodeGenerator/
 ├── prj_img/
-│   └── qr_code_generator.png
+│   ├── qr_code_generator.png
+│   └── version/
+│       └── #images
 ├── resources/
 │   ├── config.ini
 │   ├── icons/
@@ -36,12 +42,15 @@ QRCodeGenerator/
 │   └── styles/
 │       └── style.qss
 ├── src/
+│   ├── __init__.py
 │   ├── app_logic/
+│   │   ├── __init__.py
 │   │   ├── logger.py
 │   │   ├── config.py
 │   │   ├── qrcode_logic.py
 │   │   └── update_logic.py
 │   └── app_ui/
+│       ├── __init__.py
 │       ├── ui_qrcode.py
 │       └── ui_update_window.py
 ├── app.log
