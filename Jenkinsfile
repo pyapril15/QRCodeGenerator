@@ -20,16 +20,16 @@ pipeline {
 
     stages {
 
-		stage('🔄 Checkout') {
+		stage('Checkout') {
 			steps {
-				echo "📁 Checking out branch..."
+				echo "Checking out branch..."
                 checkout scm
             }
         }
 
-        stage('🐍 Setup Virtual Env') {
+        stage('Setup Virtual Env') {
 			steps {
-				echo "🔧 Setting up venv..."
+				echo "Setting up venv..."
                 bat '''
                     python -m venv %VENV_DIR%
                     call %VENV_DIR%\\Scripts\\activate.bat
@@ -38,9 +38,9 @@ pipeline {
             }
         }
 
-        stage('📦 Install Dependencies') {
+        stage('Install Dependencies') {
 			steps {
-				echo "📚 Installing requirements..."
+				echo "Installing requirements..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pip install -r requirements.txt
@@ -48,9 +48,9 @@ pipeline {
             }
         }
 
-        stage('🏗️ Build EXE') {
+        stage('Build EXE') {
 			steps {
-				echo "🔨 Compiling executable..."
+				echo "Compiling executable..."
                 bat '''
                     call %VENV_DIR%\\Scripts\\activate.bat
                     pyinstaller --onefile --windowed ^
@@ -65,9 +65,9 @@ pipeline {
             }
         }
 
-        stage('🏷️ Git Tag & Push') {
+        stage('Git Tag & Push') {
 			steps {
-				echo "🔖 Tagging ${VERSION}..."
+				echo "Tagging ${VERSION}..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
 					bat '''
                         git config user.name "pyapril15"
@@ -82,9 +82,9 @@ pipeline {
             }
         }
 
-        stage('📤 GitHub Release') {
+        stage('GitHub Release') {
 			steps {
-				echo "📝 Creating GitHub release using latest_version.md..."
+				echo "Creating GitHub release using latest_version.md..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
 					bat '''
                         setlocal EnableDelayedExpansion
@@ -115,9 +115,9 @@ pipeline {
             }
         }
 
-        stage('📥 Upload .exe') {
+        stage('Upload .exe') {
 			steps {
-				echo "🚀 Uploading .exe to GitHub release..."
+				echo "Uploading .exe to GitHub release..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
 					bat '''
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
@@ -128,7 +128,7 @@ pipeline {
                         set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
 
                         if not exist %BUILD_PATH% (
-                            echo ❌ ERROR: Executable not found!
+                            echoERROR: Executable not found!
                             exit /b 1
                         )
 
@@ -142,9 +142,9 @@ pipeline {
             }
         }
 
-        stage('🔀 Merge to main & Cleanup') {
+        stage('Merge to main & Cleanup') {
 			steps {
-				echo "🔁 Merging build → main and deleting build branch..."
+				echo "Merging build → main and deleting build branch..."
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
 					bat '''
                         REM Ensure we have both branches locally
@@ -162,7 +162,7 @@ pipeline {
                         git push origin main
 
                         REM Delete remote build branch only if merge succeeded
-                        git push origin --delete build || echo "⚠️ Could not delete build branch"
+                        git push origin --delete build || echo "Could not delete build branch"
                     '''
 			}
 		}
@@ -171,13 +171,13 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build and release successful! Ready for safe merge to main."
+            echo "Build and release successful! Ready for safe merge to main."
         }
         failure {
-            echo "❌ Build failed. Check logs before merging."
+            echo "Build failed. Check logs before merging."
         }
         cleanup {
-            echo "🧹 Cleaning up virtual environment..."
+            echo "Cleaning up virtual environment..."
             bat 'rmdir /S /Q %VENV_DIR%'
         }
     }
