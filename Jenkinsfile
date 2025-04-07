@@ -65,7 +65,6 @@ pipeline {
                     bat '''
                         setlocal EnableDelayedExpansion
 
-                        :: Read the entire content of latest_version.md
                         set "BODY="
                         for /F "usebackq delims=" %%A in ("latest_version.md") do (
                             set "LINE=%%A"
@@ -73,15 +72,17 @@ pipeline {
                             set "BODY=!BODY!!LINE!\\n"
                         )
 
-                        echo {
-                          "tag_name": "${VERSION}",
-                          "name": "${RELEASE_NAME}",
-                          "body": "!BODY!",
-                          "draft": false,
-                          "prerelease": false
-                        } > release.json
+                        (
+                            echo {
+                            echo   "tag_name": "%VERSION%",
+                            echo   "name": "%RELEASE_NAME%",
+                            echo   "body": "!BODY!",
+                            echo   "draft": false,
+                            echo   "prerelease": false
+                            echo }
+                        ) > release.json
 
-                        curl -s -X POST https://api.github.com/repos/${REPO}/releases ^
+                        curl -s -X POST https://api.github.com/repos/%REPO%/releases ^
                              -H "Authorization: token %github-token%" ^
                              -H "Accept: application/vnd.github.v3+json" ^
                              -d @release.json ^
