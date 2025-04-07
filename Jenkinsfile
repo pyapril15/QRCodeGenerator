@@ -156,7 +156,7 @@ pipeline {
                         git pull origin main
 
                         REM Merge build into main
-                        git merge origin/build --no-ff -m "🔀 Auto-merged build → main"
+                        git merge origin/build --no-ff -m "Auto-merged build → main(Jenkins)"
 
                         REM Push updated main
                         git push origin main
