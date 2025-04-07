@@ -44,11 +44,11 @@ pipeline {
         stage('🏷️ Git Tag & Push') {
             steps {
                 echo "Tagging release as ${VERSION} and pushing to GitHub..."
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat """
                         git config user.name "pyapril15"
                         git config user.email "praveen885127@gmail.com"
-                        git remote set-url origin https://%GITHUB_TOKEN%@github.com/${REPO}.git
+                        git remote set-url origin https://%github-token%@github.com/${REPO}.git
                         git fetch --tags
                         git tag -d ${VERSION} 2>NUL
                         git tag ${VERSION}
@@ -61,10 +61,10 @@ pipeline {
         stage('📤 Create GitHub Release') {
             steps {
                 echo "Creating GitHub release..."
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat """
                         curl -s -X POST https://api.github.com/repos/${REPO}/releases ^
-                             -H "Authorization: token %GITHUB_TOKEN%" ^
+                             -H "Authorization: token %github-token%" ^
                              -H "Accept: application/vnd.github.v3+json" ^
                              -d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"${RELEASE_NAME}\\", \\"body\\": \\"${RELEASE_BODY}\\", \\"draft\\": false, \\"prerelease\\": false }" ^
                              -o response.json
@@ -76,7 +76,7 @@ pipeline {
         stage('📥 Upload .exe to Release') {
             steps {
                 echo "Uploading EXE to GitHub release..."
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'GUTHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
                             set "UPLOAD_URL=%%A"
@@ -91,7 +91,7 @@ pipeline {
 
                         echo Uploading EXE to !UPLOAD_URL!
                         curl -s -X POST "!UPLOAD_URL!?name=QRCodeGenerator.exe" ^
-                             -H "Authorization: token %GITHUB_TOKEN%" ^
+                             -H "Authorization: token %github-token%" ^
                              -H "Content-Type: application/octet-stream" ^
                              --data-binary "@%BUILD_PATH%"
                     '''
