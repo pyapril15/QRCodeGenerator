@@ -74,31 +74,47 @@ pipeline {
         stage('Create GitHub Release with EXE Upload') {
 			steps {
 				withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
-					bat """
-                        echo Creating GitHub release...
+					bat '''
+						echo Creating GitHub release...
 
-                        curl -s -X POST https://api.github.com/repos/pyapril15/${REPO_NAME}/releases ^
-                        -H "Authorization: token %TOKEN%" ^
-                        -H "Accept: application/vnd.github.v3+json" ^
-                        -d "{ \\"tag_name\\": \\"${env.VERSION}\\", \\"name\\": \\"QRCode Generator ${env.VERSION}\\", \\"body\\": \\"🚀 New release of QRCodeGenerator!\\\\n\\\\n🔹 Version: ${env.VERSION}\\\\n🔹 Platform: Windows (.exe)\\\\n\\\\nThis release includes all the latest features, fixes, and enhancements.\\\\n\\\\n\\u2728 Enjoy generating beautiful QR codes with ease.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
-                        -o response.json
+						REM Step 1: Create the GitHub release and save response
+						curl -s -X POST https://api.github.com/repos/pyapril15/QRCodeGenerator/releases ^
+							-H "Authorization: token %TOKEN%" ^
+							-H "Accept: application/vnd.github.v3+json" ^
+							-d "{ \\"tag_name\\": \\"${VERSION}\\", \\"name\\": \\"QRCode Generator ${VERSION}\\", \\"body\\": \\"🚀 New release of QRCodeGenerator!\\\\n\\\\n🔹 Version: ${VERSION}\\\\n🔹 Platform: Windows (.exe)\\\\n\\\\nThis release includes all the latest features, fixes, and enhancements.\\\\n\\\\n✨ Enjoy generating beautiful QR codes with ease.\\", \\"draft\\": false, \\"prerelease\\": false }" ^
+							-o response.json
 
-                        for /f "tokens=2 delims=:," %%A in ('findstr /i "upload_url" response.json') do (
-                            set "UPLOAD_URL=%%~A"
-                        )
+						REM Step 2: Extract upload_url using PowerShell
+						for /f "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
+							set "UPLOAD_URL=%%A"
+						)
 
-                        setlocal enabledelayedexpansion
-                        set "UPLOAD_URL=!UPLOAD_URL:~1,-1!"
-                        set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
+						REM Step 3: Sanitize URL
+						setlocal enabledelayedexpansion
+						set "UPLOAD_URL=!UPLOAD_URL:{?name,label}=!"
 
-                        curl -s -X POST "!UPLOAD_URL!?name=${EXE_NAME}" ^
-                        -H "Authorization: token %TOKEN%" ^
-                        -H "Content-Type: application/octet-stream" ^
-                        --data-binary "@${DIST_DIR}\\${EXE_NAME}"
-                    """
-                }
-            }
-        }
+						REM Step 4: Check if EXE exists
+						if not exist dist\\QRCodeGenerator.exe (
+							echo ❌ ERROR: dist\\QRCodeGenerator.exe not found!
+							exit /b 1
+						)
+
+						REM Step 5: Upload EXE to GitHub release
+						echo Uploading EXE to !UPLOAD_URL!
+						curl -s -X POST "!UPLOAD_URL!?name=QRCodeGenerator.exe" ^
+							-H "Authorization: token %TOKEN%" ^
+							-H "Content-Type: application/octet-stream" ^
+							--data-binary "@dist\\QRCodeGenerator.exe"
+						if errorlevel 1 (
+							echo ❌ ERROR: Upload failed!
+							exit /b 2
+						) else (
+							echo ✅ EXE uploaded successfully.
+						)
+					'''
+				}
+			}
+		}
     }
 
     post {
