@@ -84,7 +84,7 @@ pipeline {
         stage('📥 Upload .exe to Release') {
             steps {
                 echo "Uploading EXE to GitHub release..."
-                withCredentials([string(credentialsId: 'GUTHUB_TOKEN', variable: 'github-token')]) {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'github-token')]) {
                     bat '''
                         for /F "tokens=* delims=" %%A in ('powershell -Command "(Get-Content response.json | ConvertFrom-Json).upload_url"') do (
                             set "UPLOAD_URL=%%A"
