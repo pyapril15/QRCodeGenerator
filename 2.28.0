@@ -1,0 +1,5 @@
+Requirement already satisfied: requests in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (2.32.3)
+Requirement already satisfied: charset-normalizer<4,>=2 in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (from requests) (3.4.1)
+Requirement already satisfied: idna<4,>=2.5 in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (from requests) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (from requests) (2.3.0)
+Requirement already satisfied: certifi>=2017.4.17 in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (from requests) (2025.1.31)

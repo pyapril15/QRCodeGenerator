@@ -1,0 +1,2 @@
+Requirement already satisfied: qrcode in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (8.1)
+Requirement already satisfied: colorama in d:\codelabpraveen\coding\programming\python\prj\tkinter_gui\qrcodegenerator\.venv\lib\site-packages (from qrcode) (0.4.6)
